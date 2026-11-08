@@ -1,0 +1,20 @@
+# Blueprint de Render: https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: reparared
+    runtime: docker
+    plan: starter            # el disco persistente requiere un plan de pago
+    healthCheckPath: /api/health
+    disk:
+      name: reparared-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: DB_PATH
+        value: /data/reparared.db
+      - key: SEED_DEMO
+        value: "0"
+      - key: ADMIN_EMAIL
+        sync: false          # Render te lo pedirá al crear el servicio
+      - key: ADMIN_PASSWORD
+        sync: false

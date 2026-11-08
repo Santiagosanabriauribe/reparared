@@ -1,17 +1,15 @@
-# Blueprint de Render: https://render.com/docs/blueprint-spec
+# Blueprint de Render (plan gratuito, para demostración): https://render.com/docs/blueprint-spec
+# Sin disco persistente: la base se borra en cada reinicio o despliegue.
+# Para conservar datos, usa render.starter-con-disco.yaml (plan de pago con disco).
 services:
   - type: web
     name: reparared
     runtime: docker
-    plan: starter            # el disco persistente requiere un plan de pago
+    plan: free
     healthCheckPath: /api/health
-    disk:
-      name: reparared-data
-      mountPath: /data
-      sizeGB: 1
     envVars:
       - key: DB_PATH
-        value: /data/reparared.db
+        value: /tmp/reparared.db
       - key: SEED_DEMO
         value: "0"
       - key: ADMIN_EMAIL
