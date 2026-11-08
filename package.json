@@ -1,0 +1,13 @@
+{
+  "name": "reparared",
+  "version": "1.0.0",
+  "description": "ReparaRed: plataforma de reparación comunitaria (Node + SQLite, sin dependencias externas)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning server.js",
+    "dev": "node --disable-warning=ExperimentalWarning --watch server.js"
+  },
+  "engines": { "node": ">=22.13" },
+  "license": "UNLICENSED",
+  "private": true
+}

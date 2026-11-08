@@ -1,0 +1,15 @@
+services:
+  reparared:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      DB_PATH: /data/reparared.db
+      SEED_DEMO: "0"            # 0 = base vacía; 1 = datos de ejemplo (solo pruebas)
+      ADMIN_EMAIL: admin@reparared.demo
+      ADMIN_PASSWORD: admin1234  # cámbiala antes de publicar
+    volumes:
+      - reparared-data:/data
+    restart: unless-stopped
+volumes:
+  reparared-data:
