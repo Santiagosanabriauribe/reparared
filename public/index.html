@@ -315,8 +315,7 @@ footer nav{display:flex;gap:14px;flex-wrap:wrap}
       <a href="#solicitudes">Mis solicitudes</a>
       <a href="#jornadas">Jornadas</a>
       <a href="#guias">Guías</a>
-      <a href="#impacto">Impacto</a>
-      <a href="#panel">Panel</a>
+      <a href="#panel">Para reparadores</a>
       <a href="#admin" id="navAdmin" hidden>Administración</a>
     </nav>
     <div class="who" id="who"></div>
@@ -507,8 +506,8 @@ function openRegister(rol,then){
   modal(`<div class="mh"><div><h2>Crear cuenta</h2><p class="muted">Tus datos se guardan en el servidor de ReparaRed y solo se usan como indica la política de tratamiento de datos.</p></div><button class="x" type="button" aria-label="Cerrar">×</button></div>
   <form id="regForm" class="grid" novalidate>
     <div class="field"><span class="lbl">Quiero</span><div class="chips" id="rolChips">
-      <button type="button" class="chip" data-rol="usuario" aria-pressed="${rol==='usuario'}">Reparar mis objetos</button>
-      <button type="button" class="chip" data-rol="reparador" aria-pressed="${rol==='reparador'}">Ofrecer reparaciones</button></div></div>
+      <button type="button" class="chip" data-rol="usuario" aria-pressed="${rol==='usuario'}">Soy usuario: quiero reparar un objeto</button>
+      <button type="button" class="chip" data-rol="reparador" aria-pressed="${rol==='reparador'}">Soy reparador: ofrezco reparaciones</button></div></div>
     <div class="field"><label for="rgNombre">Nombre</label><input type="text" id="rgNombre" autocomplete="name" required></div>
     <div class="field"><label for="rgCorreo">Correo</label><input type="email" id="rgCorreo" autocomplete="email" required></div>
     <div class="field"><label for="rgPass">Contraseña</label><input type="password" id="rgPass" autocomplete="new-password" minlength="6" required><span class="hint">Mínimo 6 caracteres.</span></div>
@@ -563,7 +562,7 @@ function vInicio(){
         <span class="eyebrow">Reparación comunitaria · Área metropolitana de Bucaramanga</span>
         <h1>Repara hoy. Aprovecha mañana.</h1>
         <p class="lead">Publica lo que se dañó, recibe un diagnóstico preliminar y un precio orientativo de reparadores cercanos, y decide si vale la pena reparar antes de comprar uno nuevo.</p>
-        <div class="actions"><a class="btn primary" href="#solicitar">Solicitar reparación</a><a class="btn ghost" href="#panel">Quiero reparar</a></div>
+        <div class="actions"><a class="btn primary" href="#solicitar">Solicitar reparación</a><a class="btn ghost" href="#panel">Soy reparador</a></div>
       </div>
       <aside class="howbox" aria-label="Cómo funciona">
         <h3>Cómo funciona</h3>
@@ -952,40 +951,7 @@ function openGuide(id){
   <a class="btn ghost" href="#solicitar" id="gReq">Prefiero que lo repare alguien</a>`,()=>{$('#gReq').onclick=()=>{closeModal();draft=newDraft();draft.cat=g.cat;draft.step=2}});
 }
 
-/* ---------- Impacto ---------- */
 function metrics(){return S.metrics}
-function vImpacto(){
-  const m=metrics();
-  const pct=x=>Math.round(x*100)+' %';
-  const goals=[['Reparadores verificados vinculados',m.repsVerif,15,''],['Solicitudes recibidas',m.publicadas,60,''],['Reparaciones o reacondicionamientos efectivos',m.reparadas,30,''],['Satisfacción promedio',m.satisf,4,' / 5']];
-  const pe=Math.ceil(500000/(80000*.08));
-  app.innerHTML=`<section class="view">
-    <div class="head"><span class="eyebrow">Medición básica del piloto</span><h1>Impacto</h1><p>Indicadores calculados en tiempo real con las solicitudes registradas en la plataforma; cambian cuando se publican o cierran solicitudes.</p></div>
-    <div class="grid kpis">
-      <div class="kpi"><span>Solicitudes publicadas</span><b>${m.publicadas}</b><em class="${m.publicadas>=60?'good':'bad'}">Meta del piloto: 60</em></div>
-      <div class="kpi"><span>Con respuesta en menos de 48 h</span><b>${pct(m.resp48)}</b><em class="muted" style="font-weight:normal">${m.conResp} solicitudes con respuesta</em></div>
-      <div class="kpi"><span>Tasa de reparación completada</span><b>${pct(m.tasa)}</b><em class="${m.tasa>=.5?'good':'bad'}">Meta: 50 % de las cerradas</em></div>
-      <div class="kpi"><span>Satisfacción media</span><b>${m.satisf?m.satisf.toFixed(1).replace('.',','):'–'}</b><em class="${m.satisf>=4?'good':'bad'}">Meta: 4 o más sobre 5</em></div>
-      <div class="kpi"><span>Valor de reparaciones cerradas</span><b>${cop(m.transado)}</b><em class="muted" style="font-weight:normal">Ticket promedio ${cop(m.ticket)}</em></div>
-      <div class="kpi"><span>Ingreso ReparaRed (comisión 8 %)</span><b>${cop(m.comision)}</b><em class="muted" style="font-weight:normal">Solo sobre reparaciones cerradas</em></div>
-      <div class="kpi"><span>Peso medido de objetos recuperados</span><b>${m.kg.toLocaleString('es-CO',{maximumFractionDigits:1})} kg</b><em class="muted" style="font-weight:normal">${m.sinMedir} reparaciones sin pesar no se suman</em></div>
-      <div class="kpi"><span>Derivados a salida responsable</span><b>${m.derivados}</b><em class="muted" style="font-weight:normal">Objetos no reparables</em></div>
-    </div>
-    <div class="split">
-      <div class="panel"><h3>Metas del piloto de 8 a 12 semanas</h3>${goals.map(([t,v,g,u])=>`<div class="goal"><div class="h"><span>${t}</span><b>${u?v.toFixed(1).replace('.',','):v}${u} / ${g}${u}</b></div><div class="meter"><i style="width:${Math.min(100,Math.round(v/g*100))}%"></i></div></div>`).join('')}</div>
-      <div class="panel"><h3>Punto de equilibrio simplificado</h3>
-        <p class="muted" style="font-size:14px">Con un valor medio de ${cop(80000)} por reparación, comisión del 8 % y costo operativo de referencia de ${cop(500000)} al mes:</p>
-        <p class="price">${cop(500000)} ÷ (${cop(80000)} × 0,08) = ${(500000/6400).toLocaleString('es-CO',{maximumFractionDigits:3})}</p>
-        <div class="goal"><div class="h"><span>Reparaciones cerradas en los últimos 30 días</span><b>${m.mes} / ${pe}</b></div><div class="meter"><i style="width:${Math.min(100,Math.round(m.mes/pe*100))}%"></i></div></div>
-        <p class="muted" style="font-size:13px">No incluye IVA, retenciones, salarios ni pasarelas de pago; es un margen operativo simplificado.</p></div>
-    </div>
-    <div class="grid" style="gap:10px"><h2>Registro de solicitudes</h2>
-      <div class="tablewrap"><table><thead><tr><th>Folio</th><th>Solicitud</th><th>Estado</th><th class="num">Primera respuesta</th><th class="num">Precio final</th><th class="num">Comisión 8 %</th><th class="num">Peso medido</th></tr></thead><tbody>
-      ${S.log.map(r=>`<tr><td>${r.folio}</td><td>${esc(r.titulo)}</td><td>${pill(r.estado)}</td><td class="num">${r.primera!=null?r.primera+' h':'–'}</td><td class="num">${r.precio!=null?cop(r.precio):'–'}</td><td class="num">${r.precio!=null?cop(r.precio*.08):'–'}</td><td class="num">${r.kg!=null?r.kg.toLocaleString('es-CO')+' kg':'–'}</td></tr>`).join('')}
-      </tbody></table></div></div>
-    <div class="callout info"><b>Sobre la medición ambiental:</b> la plataforma no calcula “residuos evitados” ni emisiones, porque eso requiere una metodología y evidencia del destino de cada objeto. Por ahora solo se suma el peso medido en báscula de los objetos recuperados. El costo de captación por usuario se calculará cuando se registre el gasto real de divulgación del piloto.</div>
-  </section>`;
-}
 
 /* ---------- Panel del reparador ---------- */
 function vPanel(){
@@ -1150,7 +1116,7 @@ function vLegal(){
 }
 
 /* ---------- Rutas ---------- */
-const VIEWS={inicio:vInicio,solicitar:vSolicitar,reparadores:vReparadores,solicitudes:vSolicitudes,jornadas:vJornadas,guias:vGuias,impacto:vImpacto,panel:vPanel,admin:vAdmin,legal:vLegal};
+const VIEWS={inicio:vInicio,solicitar:vSolicitar,reparadores:vReparadores,solicitudes:vSolicitudes,jornadas:vJornadas,guias:vGuias,panel:vPanel,admin:vAdmin,legal:vLegal};
 let lastView='';
 async function route(){
   await refresh();
